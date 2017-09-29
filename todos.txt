@@ -1,3 +1,15 @@
-0 walk the dog
-0 buy a milk
-0 do homework
+0 buy milk
+1 walk the dog
+0 do my homework
+
+todo.py-a
+todo.py-aasd
+asd
+-aasd
+asd
+asd
+-aasd
+-aasd-aasd-aasd
+-aasd
+0-aasd
+0-aasd
