@@ -28,9 +28,12 @@ todo = argv[0]
 def get_arguments():
     arguments = argv[1:]
     list_of_arguments = ['-a', '-r', '-c', '-l']
-    if len(arguments) > 0 and arguments[0] in list_of_arguments:
+    if len(arguments) == 0:
+        return False
+    elif arguments[0] in list_of_arguments:
         return arguments
     else:
+        print('Unsupported argument')
         return False
 
 def get_add(giving_item):
@@ -43,8 +46,18 @@ def get_add(giving_item):
     else:
         print("Unable to add: no task provided")
 
-# def delete_items():
-        
+def delete_item(todos):
+    if len(argv) >= 3:
+        try:
+            index = int(argv[2])
+            if len(todos) >= index:
+                print('remove')
+            else:
+                print('Unable to remove: index is out of bound')
+        except:
+            print("Unable to remove: index is not a number")
+    else:
+        print("Unable to remove: no index provided")
 
 def check_task(items):
     text = ""
@@ -71,7 +84,7 @@ def controller():
     elif arguments[0] == "-c":
         check_task(todos)
     elif arguments[0] == "-r":
-        print("remove")
+        delete_item(todos)
     elif arguments[0] == "-a":
         todos = get_add('todos.txt')
         
