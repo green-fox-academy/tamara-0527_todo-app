@@ -16,12 +16,13 @@ def import_file(file_name):
         items.append(dictionary)
     return items
 
-def print_items(todos):
-    if len(todos) == 0:
-       print("No todos for today! :)")
-    else:
-        for index in range(len(todos)):
-            print(str(index+1) + ' - ' + todos[index]['task']) 
+# def print_items(todos):
+#     if len(todos) == 0:
+#        print("No todos for today! :)")
+#     else:
+#         for index in range(len(todos)):
+#             print(str(index+1) + ' - ' + todos[index]['task']) 
+
 
 todo = argv[0]
 
@@ -46,33 +47,65 @@ def get_add(giving_item):
     else:
         print("Unable to add: no task provided")
 
-def delete_item(todos):
+def delete_item():
     if len(argv) >= 3:
         try:
-            index = int(argv[2])
-            if len(todos) >= index:
-                print('remove')
-            else:
-                print('Unable to remove: index is out of bound')
+            remove_index = int(argv[2])
+            with open("todos.txt","r+") as f:
+                fr = f.readlines()
+                f.seek(0)
+                if len(fr) >= remove_index:
+                    for line_index in range(len(fr)):
+                        if remove_index != line_index + 1:
+                            f.write(fr[line_index])
+                    f.truncate()
+                else:
+                    print('Unable to remove: index is out of bound')
         except:
             print("Unable to remove: index is not a number")
     else:
         print("Unable to remove: no index provided")
 
-def check_task(items):
-    text = ""
-    i = 1
-    for line in items:
-        text += str(i) + " - "
-        print(line)
-        if line['complete'] == False:
-            text += '[ ] '
-        else:
-            text += '[X] '
-        text += line['task']
-        i += 1
-    print(text)
+def print_items(items):
+    if len(items) == 0:
+        print("No todos for today! :)")
+    else:
+        text = ""
+        i = 1
+        for line in items:
+            text += str(i) + " - "
+            if line['complete'] == False:
+                text += '[ ] '
+            else:
+                text += '[X] '
+            text += line['task']
+            i += 1
+        print(text)
             
+
+def check_task():
+    if len(argv) >= 3:
+        try:
+            check_index = int(argv[2])
+            with open("todos.txt","r+") as f:
+                fr = f.readlines()
+                f.seek(0)
+                if len(fr) >= check_index:
+                        for line_index in range(len(fr)):
+                            if check_index != line_index + 1:
+                                f.write(fr[line_index])
+                            else:
+                                line = fr[line_index]
+                                new_line = line.replace('0', '1')
+                                f.write(new_line)
+                        f.truncate()
+                else:
+                    print('Unable to check: index is out of bound')
+        except:
+            print("Unable to check: index is not a number")
+    else:
+        print("Unable to check: no index provided")
+    
 def controller():
     arguments = get_arguments()
     todos = import_file('todos.txt')
@@ -82,37 +115,15 @@ def controller():
     elif arguments[0] == "-l":
         print_items(todos)
     elif arguments[0] == "-c":
-        check_task(todos)
+        check_task()
     elif arguments[0] == "-r":
-        delete_item(todos)
+        delete_item()
     elif arguments[0] == "-a":
         todos = get_add('todos.txt')
         
-       
-        # print("add")
 
 def print_usage():
     print('Command line arguments: \n-l   Lists all the tasks\n-a   Adds a new task\n-r   Removes an task\n-c   Completes an task')
 
-# def useage_command():
-#     todos = import_file('todos.txt')
-#     arguments = get_arguments()
-#     text = ""
-#     if not arguments:
-#         return 'Command line arguments: \n-l   Lists all the tasks\n-a   Adds a new task\n-r   Removes an task\
-#                 -c   Completes an task'
-#     elif arguments[-1] == "-a" + 'text':
-#         todos.append("text")
-#         return (todos)
-#     elif arguments[-1] == "-l":
-#         print(todos)
-#     elif arguments[-1] == "-r" + str(len(todos[0])):
-#         todos.remove(todos[0])
-#         return todos    
-#     elif arguments[-1] == "-c" and str(len(todos[0])):
-#         todos[todos[0]] = int(len(todos[0]))
-
-
 
 controller()
-# print(useage_command())
