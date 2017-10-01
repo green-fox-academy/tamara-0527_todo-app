@@ -1,7 +1,11 @@
 from sys import argv
 
-def import_file(file_name):
-    file = open(file_name, 'r')
+todo = argv[0]
+todo_file="todos.txt"
+
+
+def import_file():
+    file = open(todo_file, 'r')
     fr = file.readlines()
     file.close()
     items = []
@@ -16,15 +20,6 @@ def import_file(file_name):
         items.append(dictionary)
     return items
 
-# def print_items(todos):
-#     if len(todos) == 0:
-#        print("No todos for today! :)")
-#     else:
-#         for index in range(len(todos)):
-#             print(str(index+1) + ' - ' + todos[index]['task']) 
-
-
-todo = argv[0]
 
 def get_arguments():
     arguments = argv[1:]
@@ -37,21 +32,22 @@ def get_arguments():
         print('Unsupported argument')
         return False
 
-def get_add(giving_item):
+
+def add_task():
     if len(argv) >= 3:
         giving_items = argv[2:]
-        with open('todos.txt', 'a') as fw:
+        with open(todo_file, 'a') as fw:
             fw.write('0 ' + ' '.join(giving_items) + '\n')
-        fw.close()
-        return import_file('todos.txt')
+        return 'Task is added'
     else:
-        print("Unable to add: no task provided")
+        return "Unable to add: no task provided"
+
 
 def delete_item():
     if len(argv) >= 3:
         try:
             remove_index = int(argv[2])
-            with open("todos.txt","r+") as f:
+            with open(todo_file,"r+") as f:
                 fr = f.readlines()
                 f.seek(0)
                 if len(fr) >= remove_index:
@@ -59,16 +55,19 @@ def delete_item():
                         if remove_index != line_index + 1:
                             f.write(fr[line_index])
                     f.truncate()
+                    return 'Removed'
                 else:
-                    print('Unable to remove: index is out of bound')
+                    return 'Unable to remove: index is out of bound'
         except:
-            print("Unable to remove: index is not a number")
+            return "Unable to remove: index is not a number"
     else:
-        print("Unable to remove: no index provided")
+        return "Unable to remove: no index provided"
 
-def print_items(items):
+
+def print_items():
+    items = import_file()
     if len(items) == 0:
-        print("No todos for today! :)")
+        return "No todos for today! :)"
     else:
         text = ""
         i = 1
@@ -80,50 +79,47 @@ def print_items(items):
                 text += '[X] '
             text += line['task']
             i += 1
-        print(text)
+        return text
             
 
 def check_task():
     if len(argv) >= 3:
         try:
             check_index = int(argv[2])
-            with open("todos.txt","r+") as f:
+            with open(todo_file,"r+") as f:
                 fr = f.readlines()
                 f.seek(0)
                 if len(fr) >= check_index:
                         for line_index in range(len(fr)):
-                            if check_index != line_index + 1:
-                                f.write(fr[line_index])
-                            else:
-                                line = fr[line_index]
-                                new_line = line.replace('0', '1')
-                                f.write(new_line)
+                            line = fr[line_index]
+                            if check_index == line_index + 1:
+                                line = line.replace('0', '1')
+                            f.write(line)
                         f.truncate()
+                        return 'Checked'
                 else:
-                    print('Unable to check: index is out of bound')
+                    return 'Unable to check: index is out of bound'
         except:
-            print("Unable to check: index is not a number")
+            return "Unable to check: index is not a number"
     else:
-        print("Unable to check: no index provided")
-    
-def controller():
-    arguments = get_arguments()
-    todos = import_file('todos.txt')
-    # useage_command()
-    if not arguments:
-        print_usage()
-    elif arguments[0] == "-l":
-        print_items(todos)
-    elif arguments[0] == "-c":
-        check_task()
-    elif arguments[0] == "-r":
-        delete_item()
-    elif arguments[0] == "-a":
-        todos = get_add('todos.txt')
-        
+        return "Unable to check: no index provided"
+
 
 def print_usage():
-    print('Command line arguments: \n-l   Lists all the tasks\n-a   Adds a new task\n-r   Removes an task\n-c   Completes an task')
+    return 'Command line arguments: \n-l   Lists all the tasks\n-a   Adds a new task\n-r   Removes an task\n-c   Completes an task'
 
 
-controller()
+def controller():
+    arguments = get_arguments()
+    if not arguments:
+        return print_usage()
+    elif arguments[0] == "-l":
+        return print_items()
+    elif arguments[0] == "-c":
+        return check_task()
+    elif arguments[0] == "-r":
+        return delete_item()
+    elif arguments[0] == "-a":
+        return add_task()
+        
+print(controller())
